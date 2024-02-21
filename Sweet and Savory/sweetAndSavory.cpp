@@ -1,32 +1,35 @@
 #include <iostream>
 #include <vector>
+#include <limits>
 
 using namespace std;
 
 vector<int> sweetAndSavory(vector<int> dishes, int target) {
-    sort(dishes.begin(), dishes.end());
+    vector<int> sweet;
+    vector<int> savory;
 
-    int sweet = 0, savory = dishes.size() - 1, bestDiff = INT_MAX;
-    vector<int> ans = {0, 0};
+    for (int it: dishes) {
+        if (it < 0) sweet.push_back(it);
+        else savory.push_back(it);
+    }
 
-    if (dishes.size() < 2 || dishes[sweet] > 0 || dishes[savory] < 0)
-        return ans;
+    sort(sweet.begin(), sweet.end(), [](int a, int b) { return abs(a) < abs(b); });
+    sort(savory.begin(), savory.end());
 
-    while (sweet < savory && dishes[sweet] * dishes[savory] < 0) {
-        if (dishes[sweet] > 0 || dishes[savory] < 0) break;
+    vector<int> bestPair = {0, 0};
+    int i = 0, j = 0, bestDiff = INT_MAX;
 
-        int flavor = dishes[sweet] + dishes[savory];
-        if (flavor == target) return {dishes[sweet], dishes[savory]};
-
-        if (flavor < target) {
-            int currDiff = target - flavor;
+    while (i < sweet.size() && j < savory.size()) {
+        int curr = sweet[i] + savory[j];
+        if (curr <= target) {
+            int currDiff = target - curr;
             if (currDiff < bestDiff) {
                 bestDiff = currDiff;
-                ans[0] = dishes[sweet];
-                ans[1] = dishes[savory];
+                bestPair[0] = sweet[i];
+                bestPair[1] = savory[j];
             }
-            sweet++;
-        } else savory++;
+            j++;
+        } else i++;
     }
-    return ans;
+    return bestPair;
 }
