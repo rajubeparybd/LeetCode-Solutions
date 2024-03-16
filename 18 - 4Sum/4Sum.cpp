@@ -35,4 +35,42 @@ public:
         }
         return temp;
     }
+
+
+    /**
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * Solution 2 for 4 sum
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     */
+
+    vector <vector<int>> fourSum(vector<int> &nums, int targetSum) {
+        ios_base::sync_with_stdio(false);
+        cin.tie(nullptr);
+        cout.tie(nullptr);
+
+        unordered_map < int, vector < vector < int>>> ap;
+        vector <vector<int>> qd;
+        int n = nums.size();
+
+        for (int i = 1; i < n - 1; ++i) {
+            for (int j = i + 1; j < n; ++j) {
+                int sum = nums[i] + nums[j];
+                int diff = targetSum - sum;
+                if (ap.find(diff) != ap.end()) {
+                    for (vector<int> it: ap[diff]) {
+                        it.push_back(nums[i]);
+                        it.push_back(nums[j]);
+                        qd.push_back(it);
+                    }
+                }
+            }
+
+            for (int k = 0; k < i; ++k) {
+                int sum = nums[i] + nums[k];
+                if (ap.find(sum) == ap.end()) ap[sum] = vector < vector < int >> {{nums[k], nums[i]}};
+                else ap[sum].push_back(vector < int > {nums[k], nums[i]});
+            }
+        }
+        return qd;
+    }
 };
